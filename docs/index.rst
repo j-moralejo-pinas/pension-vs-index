@@ -1,8 +1,8 @@
 =============
-package-name
+pension-vs-index
 =============
 
-This is the documentation of **package-name project**.
+This is the documentation of **pension-vs-index project**.
 
 Contents
 ========

@@ -2,7 +2,7 @@
 Contributors
 ============
 
-The package-name project is made possible by contributions from the following people:
+The pension-vs-index project is made possible by contributions from the following people:
 
 Maintainers
 ===========
