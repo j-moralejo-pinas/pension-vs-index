@@ -11,7 +11,9 @@ authors = [
 ]
 readme = "README.rst"
 license = { text = "MIT" }
-keywords = ["finance,simulation,financial-simulation,investment-simulation,pension-fund,index-fund,retirement-planning"]
+keywords = [
+    "finance,simulation,financial-simulation,investment-simulation,pension-fund,index-fund,retirement-planning",
+]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
@@ -115,7 +117,7 @@ pre-summary-newline = true
 close-quotes-on-newline = true
 
 [tool.vulture]
-# min_confidence = 80
+min_confidence = 70
 paths = ["src", "tests"]
 
 [tool.bandit]
