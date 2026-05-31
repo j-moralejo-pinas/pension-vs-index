@@ -67,14 +67,12 @@ class FixedTaxingEntity(BaseTaxingEntity):
         current_price: float,
         *,
         tags: list[str],
-        extraction_fee: float = 0.0,
-        min_extraction_fee: float = 0.0,
-    ) -> tuple[float, float, float]:
+        fee_amount: float = 0.0,
+    ) -> float:
         """Calculate fixed-rate tax for a gross extraction."""
-        del contributions, current_price, tags, extraction_fee, min_extraction_fee
+        del contributions, current_price, tags, fee_amount
         self.extraction_calls.append((gross_amount, gross_annual_salary, 0, 0))
-        tax_amount = gross_amount * self.extraction_tax_rate
-        return gross_amount - tax_amount, tax_amount, 0.0
+        return gross_amount * self.extraction_tax_rate
 
 
 class DoublingInvestmentVehicle(BaseInvestmentVehicle):

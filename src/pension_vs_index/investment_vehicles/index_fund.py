@@ -261,15 +261,20 @@ class IndexFund(BaseInvestmentVehicle):
             )
             raise ValueError(err_msg)
 
-        net_amount, tax_amount, fee_amount = taxing_entity.calculate_gross_extraction_tax(
+        fee_amount = self._percentage_fee(
+            amount=gross_amount,
+            fee_rate=self.exit_fee,
+            min_fee=self.min_exit_fee,
+        )
+        tax_amount = taxing_entity.calculate_gross_extraction_tax(
             gross_amount=gross_amount,
             gross_annual_salary=gross_salary_during_extraction,
             contributions=self.contributions,
             current_price=self.current_value,
             tags=self.tags.copy(),
-            extraction_fee=self.exit_fee,
-            min_extraction_fee=self.min_exit_fee,
+            fee_amount=fee_amount,
         )
+        net_amount = gross_amount - tax_amount - fee_amount
         self._extract_from_contributions(gross_amount)
 
         return net_amount, tax_amount, fee_amount

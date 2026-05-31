@@ -250,15 +250,16 @@ class BaseInvestmentVehicle(ABC):
             )
             raise ValueError(err_msg)
 
-        net_amount, tax_amount, fee_amount = taxing_entity.calculate_gross_extraction_tax(
+        fee_amount = 0.0
+        tax_amount = taxing_entity.calculate_gross_extraction_tax(
             gross_amount=gross_amount,
             gross_annual_salary=gross_salary_during_extraction,
             contributions=self.contributions,
             current_price=self.current_value,
             tags=self.tags.copy(),
-            extraction_fee=0.0,
-            min_extraction_fee=0.0,
+            fee_amount=fee_amount,
         )
+        net_amount = gross_amount - tax_amount - fee_amount
         self._extract_from_contributions(gross_amount)
 
         return net_amount, tax_amount, fee_amount

@@ -296,11 +296,10 @@ class HaciendaEspanola(BaseTaxingEntity):
         current_price: float,
         *,
         tags: list[str],
-        extraction_fee: float = 0.0,
-        min_extraction_fee: float = 0.0,
-    ) -> tuple[float, float, float]:
+        fee_amount: float = 0.0,
+    ) -> float:
         """
-        Calculate the tax and fees for a gross extraction.
+        Calculate the tax for a gross extraction.
 
         Parameters
         ----------
@@ -314,19 +313,13 @@ class HaciendaEspanola(BaseTaxingEntity):
             The current price of the investment vehicle.
         tags : list[str]
             Tax tags associated with the investment vehicle.
-        extraction_fee : float, optional
-            The fee charged over the gross extraction amount, by default 0.0.
-        min_extraction_fee : float, optional
-            The minimum absolute extraction fee, by default 0.0.
+        fee_amount : float, optional
+            The fee amount applied to the gross extraction, by default 0.0.
 
         Returns
         -------
         float
-            The amount extracted after applying taxes and fees.
-        float
             The amount of tax to apply to the gross extraction.
-        float
-            The amount of fees applied to the gross extraction.
 
         Raises
         ------
@@ -334,7 +327,7 @@ class HaciendaEspanola(BaseTaxingEntity):
             If the requested gross amount is greater than the available contributions.
         """
         if gross_amount <= 0:
-            return 0.0, 0.0, 0.0
+            return 0.0
 
         available_amount = sum(
             contribution.amount_left(current_price) for contribution in contributions
@@ -343,22 +336,18 @@ class HaciendaEspanola(BaseTaxingEntity):
             err_msg = f"Cannot extract {gross_amount} from the available contributions."
             raise ValueError(err_msg)
 
-        fee_amount = self._percentage_fee(gross_amount, extraction_fee, min_extraction_fee)
         if "plan_de_pensiones" in tags:
-            tax_amount = self._irpf_tax_for_gross_extraction(
+            return self._irpf_tax_for_gross_extraction(
                 gross_extraction=gross_amount,
                 gross_annual_salary=gross_annual_salary,
             )
-        else:
-            tax_amount = self._regular_tax_for_gross_extraction(
-                gross_extraction=gross_amount,
-                contributions=contributions,
-                current_price=current_price,
-                extraction_fee=extraction_fee,
-                min_extraction_fee=min_extraction_fee,
-            )
 
-        return gross_amount - tax_amount - fee_amount, tax_amount, fee_amount
+        return self._regular_tax_for_gross_extraction(
+            gross_extraction=gross_amount,
+            contributions=contributions,
+            current_price=current_price,
+            fee_amount=fee_amount,
+        )
 
     def regular_vehicle_investment_extraction_tax(
         self,
@@ -697,8 +686,7 @@ class HaciendaEspanola(BaseTaxingEntity):
         gross_extraction: float,
         contributions: list[Contribution],
         current_price: float,
-        extraction_fee: float,
-        min_extraction_fee: float,
+        fee_amount: float,
     ) -> float:
         """
         Calculate capital-gains tax for a gross extraction.
@@ -711,10 +699,8 @@ class HaciendaEspanola(BaseTaxingEntity):
             The list of contributions made to the investment vehicle.
         current_price : float
             The current price of the investment vehicle.
-        extraction_fee : float
-            The fee charged over the gross extraction amount.
-        min_extraction_fee : float
-            The minimum absolute extraction fee.
+        fee_amount : float
+            The fee amount applied to the gross extraction.
 
         Returns
         -------
@@ -729,7 +715,6 @@ class HaciendaEspanola(BaseTaxingEntity):
         if gross_extraction <= 0 or current_price <= 0:
             return 0.0
 
-        fee_amount = self._percentage_fee(gross_extraction, extraction_fee, min_extraction_fee)
         net_sale_ratio = (gross_extraction - fee_amount) / gross_extraction
         gross_left_to_extract = gross_extraction
         accumulated_gains = 0.0

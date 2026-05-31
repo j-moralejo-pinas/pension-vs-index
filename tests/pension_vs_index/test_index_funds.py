@@ -15,6 +15,7 @@ class RecordingTaxingEntity(BaseTaxingEntity):
         self.extraction_tags: list[str] | None = None
         self.extraction_fee: float | None = None
         self.min_extraction_fee: float | None = None
+        self.gross_extraction_fee_amount: float | None = None
 
     def calculate_contribution_tax(
         self,
@@ -69,24 +70,13 @@ class RecordingTaxingEntity(BaseTaxingEntity):
         current_price: float,
         *,
         tags: list[str],
-        extraction_fee: float = 0.0,
-        min_extraction_fee: float = 0.0,
-    ) -> tuple[float, float, float]:
+        fee_amount: float = 0.0,
+    ) -> float:
         """Record the extraction tax tags for a gross extraction."""
-        del gross_annual_salary, contributions, current_price
+        del gross_amount, gross_annual_salary, contributions, current_price
         self.extraction_tags = tags.copy()
-        self.extraction_fee = extraction_fee
-        self.min_extraction_fee = min_extraction_fee
-        fee_amount = _percentage_fee(gross_amount, extraction_fee, min_extraction_fee)
-        return gross_amount - fee_amount, 0.0, fee_amount
-
-
-def _percentage_fee(amount: float, fee_rate: float, min_fee: float) -> float:
-    """Calculate a percentage fee with a minimum absolute amount."""
-    if amount <= 0:
+        self.gross_extraction_fee_amount = fee_amount
         return 0.0
-
-    return min(amount, max(amount * fee_rate, min_fee))
 
 
 def test_index_fund_pass_year_applies_deterministic_return() -> None:
@@ -294,17 +284,38 @@ def test_index_fund_extract_contribution_rejects_amount_above_total() -> None:
 def test_index_fund_extract_gross_contribution_returns_net_tax_and_fee() -> None:
     """Gross extraction returns the net amount, tax amount, and fee amount."""
     fund = IndexFund(exit_fee=0.10)
+    taxing_entity = RecordingTaxingEntity()
     fund.contributions = [Contribution(buying_price=1, amount=100)]
 
     net_amount, tax_amount, fee_amount = fund.extract_gross_contribution(
         gross_salary_during_extraction=40_000,
-        taxing_entity=RecordingTaxingEntity(),
+        taxing_entity=taxing_entity,
         gross_amount=50,
     )
 
     assert net_amount == 45
     assert tax_amount == 0
     assert fee_amount == 5
+    assert taxing_entity.gross_extraction_fee_amount == 5
+    assert fund.total == 50
+
+
+def test_index_fund_extract_gross_contribution_precalculates_minimum_exit_fee() -> None:
+    """Gross extraction passes the precomputed minimum exit fee to the tax entity."""
+    fund = IndexFund(exit_fee=0.01, min_exit_fee=10)
+    taxing_entity = RecordingTaxingEntity()
+    fund.contributions = [Contribution(buying_price=1, amount=100)]
+
+    net_amount, tax_amount, fee_amount = fund.extract_gross_contribution(
+        gross_salary_during_extraction=40_000,
+        taxing_entity=taxing_entity,
+        gross_amount=50,
+    )
+
+    assert net_amount == 40
+    assert tax_amount == 0
+    assert fee_amount == 10
+    assert taxing_entity.gross_extraction_fee_amount == 10
     assert fund.total == 50
 
 

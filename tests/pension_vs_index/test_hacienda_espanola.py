@@ -187,39 +187,40 @@ def test_regular_extraction_tax_discounts_exit_fee_from_capital_gain() -> None:
     assert fee_amount == pytest.approx(12.135922330097087)
 
 
-def test_regular_gross_extraction_tax_returns_net_tax_and_fee() -> None:
-    """Regular gross extraction reports net cash, tax, and fees."""
+def test_regular_gross_extraction_tax_returns_tax() -> None:
+    """Regular gross extraction tax uses sale proceeds after fees."""
     tax_entity = HaciendaEspanola()
     contributions = [
         Contribution(buying_price=1, amount=100),
         Contribution(buying_price=1, amount=100),
     ]
 
-    net_amount, tax_amount, fee_amount = tax_entity.calculate_gross_extraction_tax(
+    tax_amount = tax_entity.calculate_gross_extraction_tax(
         gross_amount=50,
         gross_annual_salary=40_000,
         contributions=contributions,
         current_price=2,
         tags=[],
-        extraction_fee=0.10,
+        fee_amount=5,
     )
 
-    assert net_amount == pytest.approx(41.2)
     assert tax_amount == pytest.approx(3.8)
-    assert fee_amount == pytest.approx(5)
 
 
 def test_gross_extraction_tax_returns_zero_for_non_positive_amount() -> None:
     """Gross extraction of zero or less is a no-op."""
     tax_entity = HaciendaEspanola()
 
-    assert tax_entity.calculate_gross_extraction_tax(
-        gross_amount=0,
-        gross_annual_salary=40_000,
-        contributions=[],
-        current_price=1,
-        tags=[],
-    ) == (0.0, 0.0, 0.0)
+    assert (
+        tax_entity.calculate_gross_extraction_tax(
+            gross_amount=0,
+            gross_annual_salary=40_000,
+            contributions=[],
+            current_price=1,
+            tags=[],
+        )
+        == 0.0
+    )
 
 
 def test_regular_gross_extraction_tax_rejects_amount_above_available_contributions() -> None:
@@ -233,6 +234,7 @@ def test_regular_gross_extraction_tax_rejects_amount_above_available_contributio
             contributions=[Contribution(buying_price=1, amount=100)],
             current_price=1,
             tags=[],
+            fee_amount=0,
         )
 
 
@@ -281,8 +283,7 @@ def test_regular_tax_for_gross_extraction_returns_zero_for_non_positive_amount()
             gross_extraction=0,
             contributions=[Contribution(buying_price=1, amount=100)],
             current_price=1,
-            extraction_fee=0,
-            min_extraction_fee=0,
+            fee_amount=0,
         )
         == 0
     )
@@ -297,8 +298,7 @@ def test_regular_tax_for_gross_extraction_rejects_amount_above_available() -> No
             gross_extraction=101,
             contributions=[Contribution(buying_price=1, amount=100)],
             current_price=1,
-            extraction_fee=0,
-            min_extraction_fee=0,
+            fee_amount=0,
         )
 
 
@@ -423,22 +423,20 @@ def test_pension_plan_extraction_tax_taxes_exit_fee() -> None:
     assert fee_amount == pytest.approx(18.484288354898338)
 
 
-def test_pension_plan_gross_extraction_tax_taxes_exit_fee() -> None:
-    """Gross pension-plan extraction reports net cash, IRPF tax, and fees."""
+def test_pension_plan_gross_extraction_tax_ignores_fee_for_irpf_base() -> None:
+    """Gross pension-plan extraction tax uses the full gross amount."""
     tax_entity = HaciendaEspanola()
 
-    net_amount, tax_amount, fee_amount = tax_entity.calculate_gross_extraction_tax(
+    tax_amount = tax_entity.calculate_gross_extraction_tax(
         gross_amount=100,
         gross_annual_salary=40_000,
         contributions=[Contribution(buying_price=1, amount=1_000)],
         current_price=1,
         tags=["plan_de_pensiones"],
-        extraction_fee=0.10,
+        fee_amount=10,
     )
 
-    assert net_amount == pytest.approx(54.1)
     assert tax_amount == pytest.approx(35.9)
-    assert fee_amount == pytest.approx(10)
 
 
 def test_pension_plan_gross_extraction_tax_rejects_impossible_tax_rate(
