@@ -1,1 +1,0 @@
-"""Index funds investment vehicles."""

@@ -28,8 +28,11 @@ class FixedTaxingEntity(BaseTaxingEntity):
         self,
         amount: float,
         gross_annual_salary: float,
+        *,
+        tags: list[str],
     ) -> tuple[float, float]:
         """Calculate fixed-rate contribution tax."""
+        del tags
         self.contribution_calls.append((amount, gross_annual_salary))
         tax = amount * self.contribution_tax_rate
         return amount - tax, tax
@@ -40,16 +43,38 @@ class FixedTaxingEntity(BaseTaxingEntity):
         gross_annual_salary: float,
         contributions: list[Contribution],
         current_price: float,
-    ) -> tuple[float, float]:
+        *,
+        tags: list[str],
+        extraction_fee: float = 0.0,
+        min_extraction_fee: float = 0.0,
+    ) -> tuple[float, float, float]:
         """Calculate fixed-rate extraction tax."""
+        del tags, extraction_fee, min_extraction_fee
         self.extraction_calls.append(
             (after_tax_amount, gross_annual_salary, len(contributions), current_price)
         )
         if self.extraction_tax_rate == 0:
-            return after_tax_amount, 0.0
+            return after_tax_amount, 0.0, 0.0
 
         gross_amount = after_tax_amount / (1 - self.extraction_tax_rate)
-        return gross_amount, gross_amount - after_tax_amount
+        return gross_amount, gross_amount - after_tax_amount, 0.0
+
+    def calculate_gross_extraction_tax(
+        self,
+        gross_amount: float,
+        gross_annual_salary: float,
+        contributions: list[Contribution],
+        current_price: float,
+        *,
+        tags: list[str],
+        extraction_fee: float = 0.0,
+        min_extraction_fee: float = 0.0,
+    ) -> tuple[float, float, float]:
+        """Calculate fixed-rate tax for a gross extraction."""
+        del contributions, current_price, tags, extraction_fee, min_extraction_fee
+        self.extraction_calls.append((gross_amount, gross_annual_salary, 0, 0))
+        tax_amount = gross_amount * self.extraction_tax_rate
+        return gross_amount - tax_amount, tax_amount, 0.0
 
 
 class DoublingInvestmentVehicle(BaseInvestmentVehicle):
@@ -58,6 +83,7 @@ class DoublingInvestmentVehicle(BaseInvestmentVehicle):
     def __init__(self) -> None:
         self.contributions: list[Contribution] = []
         self.current_value = 1.0
+        self.tags: list[str] = []
 
     def pass_year(self) -> None:
         """Double the current share value."""
@@ -127,7 +153,7 @@ def test_add_contribution_applies_tax_and_records_buying_price() -> None:
     vehicle.current_value = 5
     taxing_entity = FixedTaxingEntity(contribution_tax_rate=0.25)
 
-    after_tax_amount, tax_amount = vehicle.add_contribution(
+    after_tax_amount, tax_amount, fee_amount = vehicle.add_contribution(
         amount=100,
         taxing_entity=taxing_entity,
         gross_salary_during_contribution=50_000,
@@ -135,6 +161,7 @@ def test_add_contribution_applies_tax_and_records_buying_price() -> None:
 
     assert after_tax_amount == 75
     assert tax_amount == 25
+    assert fee_amount == 0
     assert taxing_entity.contribution_calls == [(100, 50_000)]
     assert vehicle.contributions[0].buying_price == 5
     assert vehicle.contributions[0].shares == 15
@@ -147,15 +174,48 @@ def test_extract_contribution_defaults_to_total_amount() -> None:
     vehicle.current_value = 2
     taxing_entity = FixedTaxingEntity()
 
-    gross_extraction, tax_amount = vehicle.extract_contribution(
+    gross_extraction, tax_amount, fee_amount = vehicle.extract_contribution(
         gross_salary_during_extraction=40_000,
         taxing_entity=taxing_entity,
     )
 
     assert gross_extraction == 200
     assert tax_amount == 0
+    assert fee_amount == 0
     assert taxing_entity.extraction_calls == [(200, 40_000, 1, 2)]
     assert vehicle.contributions == []
+
+
+def test_extract_gross_contribution_extracts_requested_gross_amount() -> None:
+    """Gross extraction removes exactly the requested gross amount."""
+    vehicle = DoublingInvestmentVehicle()
+    vehicle.contributions = [Contribution(buying_price=1, amount=100)]
+    vehicle.current_value = 2
+    taxing_entity = FixedTaxingEntity(extraction_tax_rate=0.25)
+
+    net_amount, tax_amount, fee_amount = vehicle.extract_gross_contribution(
+        gross_salary_during_extraction=40_000,
+        taxing_entity=taxing_entity,
+        gross_amount=100,
+    )
+
+    assert net_amount == 75
+    assert tax_amount == 25
+    assert fee_amount == 0
+    assert vehicle.total == 100
+
+
+def test_extract_gross_contribution_rejects_amount_above_total() -> None:
+    """Gross extraction cannot request more money than the vehicle total."""
+    vehicle = DoublingInvestmentVehicle()
+    vehicle.contributions = [Contribution(buying_price=1, amount=100)]
+
+    with pytest.raises(ValueError, match="Cannot extract 101"):
+        vehicle.extract_gross_contribution(
+            gross_salary_during_extraction=40_000,
+            taxing_entity=FixedTaxingEntity(),
+            gross_amount=101,
+        )
 
 
 def test_extract_contribution_rejects_after_tax_amount_above_total() -> None:

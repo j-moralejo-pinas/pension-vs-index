@@ -88,10 +88,13 @@ class BaseInvestmentVehicle(ABC):
         Each contribution is represented as a Contribution object.
     current_value : float
         The current value of the investment vehicle.
+    tags : list[str]
+        Tax tags associated with the investment vehicle.
     """
 
     contributions: list[Contribution]
     current_value: float
+    tags: list[str]
 
     @property
     def total(self) -> float:
@@ -112,7 +115,7 @@ class BaseInvestmentVehicle(ABC):
         amount: float,
         taxing_entity: BaseTaxingEntity,
         gross_salary_during_contribution: float,
-    ) -> tuple[float, float]:
+    ) -> tuple[float, float, float]:
         """
         Add a contribution to the investment vehicle.
 
@@ -133,23 +136,27 @@ class BaseInvestmentVehicle(ABC):
             The amount of money contributed to the investment vehicle after applying the tax.
         float
             The amount of tax applied to the contribution.
+        float
+            The amount of fees applied to the contribution.
         """
         after_tax_contribution, tax_amount = taxing_entity.calculate_contribution_tax(
-            amount=amount, gross_annual_salary=gross_salary_during_contribution
+            amount=amount,
+            gross_annual_salary=gross_salary_during_contribution,
+            tags=self.tags.copy(),
         )
         contribution = Contribution(
             buying_price=self.current_value,
             amount=after_tax_contribution,
         )
         self.contributions.append(contribution)
-        return after_tax_contribution, tax_amount
+        return after_tax_contribution, tax_amount, 0.0
 
     def extract_contribution(
         self,
         gross_salary_during_extraction: float,
         taxing_entity: BaseTaxingEntity,
         after_tax_amount: float | None = None,
-    ) -> tuple[float, float]:
+    ) -> tuple[float, float, float]:
         """
         Extract a contribution from the investment vehicle.
 
@@ -172,6 +179,8 @@ class BaseInvestmentVehicle(ABC):
             The amount of money extracted from the investment vehicle.
         float
             The amount of taxes applied to the extraction.
+        float
+            The amount of fees applied to the extraction.
 
         Raises
         ------
@@ -188,15 +197,71 @@ class BaseInvestmentVehicle(ABC):
             )
             raise ValueError(err_msg)
 
-        gross_extraction, tax_amount = taxing_entity.calculate_extraction_tax(
+        gross_extraction, tax_amount, fee_amount = taxing_entity.calculate_extraction_tax(
             after_tax_amount=after_tax_amount,
             gross_annual_salary=gross_salary_during_extraction,
             contributions=self.contributions,
             current_price=self.current_value,
+            tags=self.tags.copy(),
+            extraction_fee=0.0,
+            min_extraction_fee=0.0,
         )
         self._extract_from_contributions(gross_extraction)
 
-        return gross_extraction, tax_amount
+        return gross_extraction, tax_amount, fee_amount
+
+    def extract_gross_contribution(
+        self,
+        gross_salary_during_extraction: float,
+        taxing_entity: BaseTaxingEntity,
+        gross_amount: float,
+    ) -> tuple[float, float, float]:
+        """
+        Extract a gross amount from the investment vehicle.
+
+        Parameters
+        ----------
+        gross_salary_during_extraction : float
+            The gross salary during the extraction period.
+        taxing_entity : BaseTaxingEntity
+            The taxing entity associated with the extraction.
+        gross_amount : float
+            The amount of money to extract before taxes and fees.
+
+        Returns
+        -------
+        float
+            The amount of money extracted after applying taxes and fees.
+        float
+            The amount of taxes applied to the extraction.
+        float
+            The amount of fees applied to the extraction.
+
+        Raises
+        ------
+        ValueError
+            If the gross amount to extract is greater than the total amount of money in the
+            investment vehicle.
+        """
+        if gross_amount > self.total:
+            err_msg = (
+                f"Cannot extract {gross_amount} from the investment vehicle, "
+                f"which only has {self.total}."
+            )
+            raise ValueError(err_msg)
+
+        net_amount, tax_amount, fee_amount = taxing_entity.calculate_gross_extraction_tax(
+            gross_amount=gross_amount,
+            gross_annual_salary=gross_salary_during_extraction,
+            contributions=self.contributions,
+            current_price=self.current_value,
+            tags=self.tags.copy(),
+            extraction_fee=0.0,
+            min_extraction_fee=0.0,
+        )
+        self._extract_from_contributions(gross_amount)
+
+        return net_amount, tax_amount, fee_amount
 
     def _extract_from_contributions(self, amount: float) -> None:
         """
