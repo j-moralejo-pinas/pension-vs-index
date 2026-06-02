@@ -42,6 +42,7 @@ packages = ["src/pension_vs_index"]
 exclude = ["/tests"]
 
 [project.optional-dependencies]
+analysis = ["jupyter", "pandas", "matplotlib"]
 dev = [
     "pytest",
     "pyright[nodejs]",
