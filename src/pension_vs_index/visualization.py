@@ -14,6 +14,8 @@ if TYPE_CHECKING:
 
 EURO_MILLION = 1_000_000
 EURO_THOUSAND = 1_000
+REGULAR_INDEX_FUND_LABEL = "Fondo de inversión"
+PENSION_PLAN_LABEL = "Plan de pensiones"
 
 
 def format_euros(value: float, _position: int | None = None) -> str:
@@ -49,9 +51,9 @@ def plot_accumulation_history(history: pd.DataFrame) -> Any:
     fig, ax = plt.subplots(figsize=(9, 5))
     for vehicle, rows in history.groupby("vehicle"):
         ax.plot(rows["year"], rows["pre_withdrawal_value"], marker="o", label=vehicle)
-    ax.set_title("Pre-withdrawal value over time")
-    ax.set_xlabel("Investment year")
-    ax.set_ylabel("Portfolio value")
+    ax.set_title("Valor acumulado antes del rescate")
+    ax.set_xlabel("Año de inversión")
+    ax.set_ylabel("Valor de la cartera")
     apply_money_axis(ax, "y")
     ax.legend()
     return fig
@@ -68,9 +70,9 @@ def plot_lump_sum_results(lump_sum: pd.DataFrame) -> Any:
         legend=False,
         color=["#4c78a8", "#f58518"],
     )
-    axes[0].set_title("Final after-tax money")
-    axes[0].set_xlabel("Vehicle")
-    axes[0].set_ylabel("Money retained")
+    axes[0].set_title("Dinero neto final")
+    axes[0].set_xlabel("Vehículo")
+    axes[0].set_ylabel("Dinero disponible")
     apply_money_axis(axes[0], "y")
     axes[0].tick_params(axis="x", rotation=0)
 
@@ -78,9 +80,9 @@ def plot_lump_sum_results(lump_sum: pd.DataFrame) -> Any:
         ["final_after_tax_money", "extraction_tax", "extraction_fees"]
     ]
     stacked.plot.bar(stacked=True, ax=axes[1], color=["#54a24b", "#e45756", "#b279a2"])
-    axes[1].set_title("Lump-sum liquidation breakdown")
-    axes[1].set_xlabel("Vehicle")
-    axes[1].set_ylabel("Gross extraction")
+    axes[1].set_title("Desglose del rescate total")
+    axes[1].set_xlabel("Vehículo")
+    axes[1].set_ylabel("Rescate bruto")
     apply_money_axis(axes[1], "y")
     axes[1].tick_params(axis="x", rotation=0)
     axes[1].legend(loc="best")
@@ -97,7 +99,11 @@ def plot_extraction_comparison_breakdown(
 ) -> Any:
     """Plot gross extraction split into after-tax money, taxes, and fees."""
     plot_data = extraction_results.copy()
-    plot_data["label"] = plot_data["scenario"] + "\n" + plot_data["vehicle"]
+    single_scenario = plot_data["scenario"].drop_duplicates().shape[0] == 1
+    if single_scenario:
+        plot_data["label"] = plot_data["vehicle"]
+    else:
+        plot_data["label"] = plot_data["scenario"] + "\n" + plot_data["vehicle"]
     value_columns = ["after_tax_money", "extraction_tax"]
     colors = ["#54a24b", "#e45756"]
     if plot_data["extraction_fees"].abs().sum() > 0:
@@ -107,11 +113,13 @@ def plot_extraction_comparison_breakdown(
     fig, ax = plt.subplots(figsize=figsize)
     plot_data.set_index("label")[value_columns].plot.bar(stacked=True, ax=ax, color=colors)
     ax.set_title(title)
-    ax.set_xlabel("Scenario and vehicle")
-    ax.set_ylabel("Gross extraction")
+    ax.set_xlabel("Vehículo")
+    ax.set_ylabel("Rescate bruto")
     apply_money_axis(ax, "y")
     ax.tick_params(axis="x", rotation=0)
-    ax.legend(["After-tax money", "Extraction tax", "Extraction fees"][: len(value_columns)])
+    ax.legend(
+        ["Dinero neto", "Impuestos del rescate", "Comisiones de salida"][: len(value_columns)]
+    )
     fig.tight_layout()
     return fig
 
@@ -142,17 +150,17 @@ def plot_partial_withdrawal_results(
             label=vehicle,
         )
 
-    axes[0].set_title("Net received by gross withdrawal")
-    axes[0].set_xlabel("Gross withdrawal (EUR)")
+    axes[0].set_title("Dinero neto por rescate bruto")
+    axes[0].set_xlabel("Rescate bruto (EUR)")
     apply_money_axis(axes[0], "x", gross_withdrawal_amounts)
-    axes[0].set_ylabel("Net received")
+    axes[0].set_ylabel("Dinero neto")
     apply_money_axis(axes[0], "y")
     axes[0].legend()
 
-    axes[1].set_title("Effective tax and fee rate")
-    axes[1].set_xlabel("Gross withdrawal (EUR)")
+    axes[1].set_title("Tipo efectivo de impuestos y comisiones")
+    axes[1].set_xlabel("Rescate bruto (EUR)")
     apply_money_axis(axes[1], "x", gross_withdrawal_amounts)
-    axes[1].set_ylabel("Effective rate")
+    axes[1].set_ylabel("Tipo efectivo")
     axes[1].legend()
 
     axes[2].bar(
@@ -161,10 +169,10 @@ def plot_partial_withdrawal_results(
         width=2_500,
     )
     axes[2].axhline(0, color="black", linewidth=1)
-    axes[2].set_title("Pension advantage by withdrawal size")
-    axes[2].set_xlabel("Gross withdrawal (EUR)")
+    axes[2].set_title("Ventaja del plan por tamaño de rescate")
+    axes[2].set_xlabel("Rescate bruto (EUR)")
     apply_money_axis(axes[2], "x", gross_withdrawal_amounts)
-    axes[2].set_ylabel("Net received difference")
+    axes[2].set_ylabel("Diferencia de dinero neto")
     apply_money_axis(axes[2], "y")
 
     fig.tight_layout()
@@ -194,10 +202,10 @@ def plot_target_net_pressure_results(
             label=vehicle,
         )
 
-    axes[0].set_title("Asset pressure to deliver target net cash")
-    axes[0].set_xlabel("Target net withdrawal (EUR)")
+    axes[0].set_title("Cartera necesaria para obtener un neto objetivo")
+    axes[0].set_xlabel("Rescate neto objetivo (EUR)")
     apply_money_axis(axes[0], "x", target_net_withdrawal_amounts)
-    axes[0].set_ylabel("Portfolio liquidated")
+    axes[0].set_ylabel("Cartera liquidada")
     axes[0].legend()
 
     axes[1].bar(
@@ -206,10 +214,10 @@ def plot_target_net_pressure_results(
         width=2_500,
     )
     axes[1].axhline(0, color="black", linewidth=1)
-    axes[1].set_title("Extra asset pressure from pension plan")
-    axes[1].set_xlabel("Target net withdrawal (EUR)")
+    axes[1].set_title("Cartera adicional exigida por el plan")
+    axes[1].set_xlabel("Rescate neto objetivo (EUR)")
     apply_money_axis(axes[1], "x", target_net_withdrawal_amounts)
-    axes[1].set_ylabel("Pension minus regular pressure")
+    axes[1].set_ylabel("Plan menos fondo")
 
     fig.tight_layout()
     return fig
@@ -224,9 +232,9 @@ def plot_horizon_sensitivity_results(
     for vehicle, rows in horizon_results.groupby("vehicle"):
         axes[0].plot(rows["years"], rows["final_after_tax_money"], label=vehicle)
 
-    axes[0].set_title("Final after-tax money by horizon")
-    axes[0].set_xlabel("Investment horizon (years)")
-    axes[0].set_ylabel("Final after-tax money")
+    axes[0].set_title("Dinero neto final por horizonte")
+    axes[0].set_xlabel("Horizonte de inversión (años)")
+    axes[0].set_ylabel("Dinero neto final")
     apply_money_axis(axes[0], "y")
     axes[0].legend()
 
@@ -236,9 +244,9 @@ def plot_horizon_sensitivity_results(
         color="#f58518",
     )
     axes[1].axhline(0, color="black", linewidth=1)
-    axes[1].set_title("Pension advantage by horizon")
-    axes[1].set_xlabel("Investment horizon (years)")
-    axes[1].set_ylabel("After-tax difference")
+    axes[1].set_title("Ventaja del plan por horizonte")
+    axes[1].set_xlabel("Horizonte de inversión (años)")
+    axes[1].set_ylabel("Diferencia neta después de impuestos")
     apply_money_axis(axes[1], "y")
 
     fig.tight_layout()
@@ -313,8 +321,8 @@ def plot_salary_heatmap_panel(
         salary_values,
     )
     ax.set_title(scenario["name"])
-    ax.set_xlabel("Contribution salary (EUR)")
-    ax.set_ylabel("Existing withdrawal salary (EUR)")
+    ax.set_xlabel("Salario durante aportación (EUR)")
+    ax.set_ylabel("Pensión pública / ingresos (EUR)")
     apply_money_axis(ax, "x", scenario["contribution_salary_ticks"])
     apply_money_axis(ax, "y", scenario["withdrawal_salary_ticks"])
     ax.set_xlim(scenario["contribution_salary_min"], scenario["contribution_salary_max"])
@@ -356,8 +364,8 @@ def plot_salary_heatmaps(
 def plot_fee_return_sensitivity(
     fee_return_sensitivity: pd.DataFrame,
     *,
-    title: str = "Pension advantage by return and fee premium",
-    colorbar_label: str = "After-tax advantage",
+    title: str = "Ventaja del plan por rentabilidad y sobrecoste de comisión",
+    colorbar_label: str = "Ventaja neta después de impuestos",
     expected_return_edges: list[float] | None = None,
     pension_fee_premium_edges: list[float] | None = None,
     expected_return_ticks: list[float] | None = None,
@@ -419,8 +427,8 @@ def plot_fee_return_sensitivity(
         )
 
     ax.set_title(title)
-    ax.set_xlabel("Expected annual return")
-    ax.set_ylabel("Pension fee premium")
+    ax.set_xlabel("Rentabilidad anual esperada")
+    ax.set_ylabel("Sobrecoste de comisión del plan")
     fig.colorbar(image, ax=ax, label=colorbar_label)
     return fig
 
@@ -432,5 +440,5 @@ def _pension_advantage_table(
     index_column: str,
 ) -> pd.DataFrame:
     wide = results.pivot_table(index=index_column, columns="vehicle", values=value_column)
-    wide["pension_advantage"] = wide["Plan de pensiones"] - wide["Regular index fund"]
+    wide["pension_advantage"] = wide[PENSION_PLAN_LABEL] - wide[REGULAR_INDEX_FUND_LABEL]
     return wide.reset_index()

@@ -11,7 +11,7 @@ import pandas as pd
 from pension_vs_index.investment_vehicles.index_fund import IndexFund
 from pension_vs_index.taxing_entity.hacienda_espanola import HaciendaEspanola
 
-REGULAR_INDEX_FUND_LABEL = "Regular index fund"
+REGULAR_INDEX_FUND_LABEL = "Fondo de inversión"
 PENSION_PLAN_LABEL = "Plan de pensiones"
 VEHICLE_LABELS = (REGULAR_INDEX_FUND_LABEL, PENSION_PLAN_LABEL)
 
@@ -268,7 +268,7 @@ def normalize_lump_sum_extraction_results(
         [
             {
                 "scenario": scenario_name,
-                "extraction_mode": "Lump sum",
+                "extraction_mode": "Rescate total",
                 "withdrawal_rate": None,
                 "vehicle": row["vehicle"],
                 "gross_contributed": row["gross_contributed"],
@@ -297,7 +297,7 @@ def normalize_percentage_extraction_results(
         [
             {
                 "scenario": scenario_name,
-                "extraction_mode": f"{row['withdrawal_rate']:.0%} extraction",
+                "extraction_mode": f"Rescate {row['withdrawal_rate']:.0%}",
                 "withdrawal_rate": row["withdrawal_rate"],
                 "vehicle": row["vehicle"],
                 "gross_contributed": row["gross_contributed"],
@@ -324,7 +324,7 @@ def lump_sum_extraction_comparison_results(
             {
                 "scenario": scenario_name,
                 "annual_contribution": config.annual_contribution,
-                "extraction_mode": "Lump sum",
+                "extraction_mode": "Rescate total",
                 "withdrawal_rate": None,
                 "vehicle": row["vehicle"],
                 "gross_contributed": row["gross_contributed"],
@@ -356,7 +356,7 @@ def percentage_extraction_comparison_results(
             {
                 "scenario": scenario_name,
                 "annual_contribution": config.annual_contribution,
-                "extraction_mode": f"{withdrawal_rate:.0%} extraction",
+                "extraction_mode": f"Rescate {withdrawal_rate:.0%}",
                 "withdrawal_rate": withdrawal_rate,
                 "vehicle": row["vehicle"],
                 "gross_contributed": row["gross_contributed"],
