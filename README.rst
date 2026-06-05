@@ -78,73 +78,24 @@ Los diccionarios siguientes controlan todos los experimentos. La clave
 sensibilidad, por eso esas variables no aparecen repetidas dentro de
 ``config``.
 
-
-
-.. raw:: html
-
-    <div>
-    <style scoped>
-        .dataframe tbody tr th:only-of-type {
-            vertical-align: middle;
-        }
-    
-        .dataframe tbody tr th {
-            vertical-align: top;
-        }
-    
-        .dataframe thead th {
-            text-align: right;
-        }
-    </style>
-    <table border="1" class="dataframe">
-      <thead>
-        <tr style="text-align: right;">
-          <th></th>
-          <th>Parámetro</th>
-          <th>Valor</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th>0</th>
-          <td>Aportación anual</td>
-          <td>10,000.00</td>
-        </tr>
-        <tr>
-          <th>1</th>
-          <td>Salario durante aportación</td>
-          <td>60,000.00</td>
-        </tr>
-        <tr>
-          <th>2</th>
-          <td>Pensión pública durante rescate</td>
-          <td>47,000.00</td>
-        </tr>
-        <tr>
-          <th>3</th>
-          <td>Horizonte</td>
-          <td>40.00</td>
-        </tr>
-        <tr>
-          <th>4</th>
-          <td>Rentabilidad esperada</td>
-          <td>0.07</td>
-        </tr>
-        <tr>
-          <th>5</th>
-          <td>Comisión fondo</td>
-          <td>0.00</td>
-        </tr>
-        <tr>
-          <th>6</th>
-          <td>Comisión plan</td>
-          <td>0.01</td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-
-
++-----+------------------------------+-----------+
+|     | Parámetro                    | Valor     |
++=====+==============================+===========+
+| 0   | Aportación anual             | 10,000.00 |
++-----+------------------------------+-----------+
+| 1   | Salario durante aportación   | 60,000.00 |
++-----+------------------------------+-----------+
+| 2   | Pensión pública durante      | 47,000.00 |
+|     | rescate                      |           |
++-----+------------------------------+-----------+
+| 3   | Horizonte                    | 40.00     |
++-----+------------------------------+-----------+
+| 4   | Rentabilidad esperada        | 0.07      |
++-----+------------------------------+-----------+
+| 5   | Comisión fondo               | 0.00      |
++-----+------------------------------+-----------+
+| 6   | Comisión plan                | 0.01      |
++-----+------------------------------+-----------+
 
 Los tramos fiscales que mandan en la comparación
 ------------------------------------------------
@@ -158,136 +109,35 @@ Antes de mirar resultados, merece la pena poner sobre la mesa las dos
 escalas que usa el modelo: el IRPF para los rescates del plan y la
 tributación del ahorro para las plusvalías del fondo.
 
++-----+---------------------------+--------------+--------------------------+-----------------+
+|     | Tramo estatal             | Tipo estatal | Tramo autonómico         | Tipo autonómico |
++=====+===========================+==============+==========================+=================+
+| 0   | 5.550 EUR - 12.450 EUR    | 9,5%         | 5.957 EUR - 13.362 EUR   | 8,5%            |
++-----+---------------------------+--------------+--------------------------+-----------------+
+| 1   | 12.450 EUR - 20.200 EUR   | 12,0%        | 13.362 EUR - 19.005 EUR  | 10,7%           |
++-----+---------------------------+--------------+--------------------------+-----------------+
+| 2   | 20.200 EUR - 35.200 EUR   | 15,0%        | 19.005 EUR - 35.426 EUR  | 12,8%           |
++-----+---------------------------+--------------+--------------------------+-----------------+
+| 3   | 35.200 EUR - 60.000 EUR   | 18,5%        | 35.426 EUR - 57.320 EUR  | 17,4%           |
++-----+---------------------------+--------------+--------------------------+-----------------+
+| 4   | 60.000 EUR - 300.000 EUR  | 22,5%        | 57.320 EUR - En adelante | 20,5%           |
++-----+---------------------------+--------------+--------------------------+-----------------+
+| 5   | 300.000 EUR - En adelante | 24,5%        |                          |                 |
++-----+---------------------------+--------------+--------------------------+-----------------+
 
-.. raw:: html
-
-    <div>
-    <style scoped>
-        .dataframe tbody tr th:only-of-type {
-            vertical-align: middle;
-        }
-    
-        .dataframe tbody tr th {
-            vertical-align: top;
-        }
-    
-        .dataframe thead th {
-            text-align: right;
-        }
-    </style>
-    <table border="1" class="dataframe">
-      <thead>
-        <tr style="text-align: right;">
-          <th></th>
-          <th>Tramo estatal</th>
-          <th>Tipo estatal</th>
-          <th>Tramo autonómico</th>
-          <th>Tipo autonómico</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th>0</th>
-          <td>5.550 EUR - 12.450 EUR</td>
-          <td>9,5%</td>
-          <td>5.957 EUR - 13.362 EUR</td>
-          <td>8,5%</td>
-        </tr>
-        <tr>
-          <th>1</th>
-          <td>12.450 EUR - 20.200 EUR</td>
-          <td>12,0%</td>
-          <td>13.362 EUR - 19.005 EUR</td>
-          <td>10,7%</td>
-        </tr>
-        <tr>
-          <th>2</th>
-          <td>20.200 EUR - 35.200 EUR</td>
-          <td>15,0%</td>
-          <td>19.005 EUR - 35.426 EUR</td>
-          <td>12,8%</td>
-        </tr>
-        <tr>
-          <th>3</th>
-          <td>35.200 EUR - 60.000 EUR</td>
-          <td>18,5%</td>
-          <td>35.426 EUR - 57.320 EUR</td>
-          <td>17,4%</td>
-        </tr>
-        <tr>
-          <th>4</th>
-          <td>60.000 EUR - 300.000 EUR</td>
-          <td>22,5%</td>
-          <td>57.320 EUR - En adelante</td>
-          <td>20,5%</td>
-        </tr>
-        <tr>
-          <th>5</th>
-          <td>300.000 EUR - En adelante</td>
-          <td>24,5%</td>
-          <td></td>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-
-
-
-.. raw:: html
-
-    <div>
-    <style scoped>
-        .dataframe tbody tr th:only-of-type {
-            vertical-align: middle;
-        }
-    
-        .dataframe tbody tr th {
-            vertical-align: top;
-        }
-    
-        .dataframe thead th {
-            text-align: right;
-        }
-    </style>
-    <table border="1" class="dataframe">
-      <thead>
-        <tr style="text-align: right;">
-          <th></th>
-          <th>Tramo ganancias</th>
-          <th>Tipo ganancias</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th>0</th>
-          <td>0 EUR - 6.000 EUR</td>
-          <td>19,0%</td>
-        </tr>
-        <tr>
-          <th>1</th>
-          <td>6.000 EUR - 50.000 EUR</td>
-          <td>21,0%</td>
-        </tr>
-        <tr>
-          <th>2</th>
-          <td>50.000 EUR - 200.000 EUR</td>
-          <td>23,0%</td>
-        </tr>
-        <tr>
-          <th>3</th>
-          <td>200.000 EUR - 300.000 EUR</td>
-          <td>27,0%</td>
-        </tr>
-        <tr>
-          <th>4</th>
-          <td>300.000 EUR - En adelante</td>
-          <td>30,0%</td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-
++-----+---------------------------+----------------+
+|     | Tramo ganancias           | Tipo ganancias |
++=====+===========================+================+
+| 0   | 0 EUR - 6.000 EUR         | 19,0%          |
++-----+---------------------------+----------------+
+| 1   | 6.000 EUR - 50.000 EUR    | 21,0%          |
++-----+---------------------------+----------------+
+| 2   | 50.000 EUR - 200.000 EUR  | 23,0%          |
++-----+---------------------------+----------------+
+| 3   | 200.000 EUR - 300.000 EUR | 27,0%          |
++-----+---------------------------+----------------+
+| 4   | 300.000 EUR - En adelante | 30,0%          |
++-----+---------------------------+----------------+
 
 1. Aportar antes de IRPF
 ------------------------
@@ -301,61 +151,14 @@ pública de ``47k`` representa una pensión máxima dentro del modelo. Con
 ese punto de partida, lo primero es ver cuánto acumula cada vehículo
 antes de rescatar nada.
 
-
-
-.. raw:: html
-
-    <div>
-    <style scoped>
-        .dataframe tbody tr th:only-of-type {
-            vertical-align: middle;
-        }
-    
-        .dataframe tbody tr th {
-            vertical-align: top;
-        }
-    
-        .dataframe thead th {
-            text-align: right;
-        }
-    </style>
-    <table border="1" class="dataframe">
-      <thead>
-        <tr style="text-align: right;">
-          <th></th>
-          <th>Vehículo</th>
-          <th>Aportación bruta acumulada</th>
-          <th>Importe invertido acumulado</th>
-          <th>Impuestos/cotizaciones en aportación</th>
-          <th>Comisiones</th>
-          <th>Valor antes del rescate</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th>0</th>
-          <td>Fondo de inversión</td>
-          <td>400,000.00</td>
-          <td>281,052.28</td>
-          <td>118,947.72</td>
-          <td>0.00</td>
-          <td>1,378,364.87</td>
-        </tr>
-        <tr>
-          <th>1</th>
-          <td>Plan de pensiones</td>
-          <td>400,000.00</td>
-          <td>381,200.00</td>
-          <td>18,800.00</td>
-          <td>0.00</td>
-          <td>1,675,620.64</td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-
-
-
++-----+--------------------+----------------------------+-----------------------------+------------------------------+------------+-------------------------+
+|     | Vehículo           | Aportación bruta acumulada | Importe invertido acumulado | Impuestos/cotizaciones en    | Comisiones | Valor antes del rescate |
+|     |                    |                            |                             | aportación                   |            |                         |
++=====+====================+============================+=============================+==============================+============+=========================+
+| 0   | Fondo de inversión | 400,000.00                 | 281,052.28                  | 118,947.72                   | 0.00       | 1,378,364.87            |
++-----+--------------------+----------------------------+-----------------------------+------------------------------+------------+-------------------------+
+| 1   | Plan de pensiones  | 400,000.00                 | 381,200.00                  | 18,800.00                    | 0.00       | 1,675,620.64            |
++-----+--------------------+----------------------------+-----------------------------+------------------------------+------------+-------------------------+
 
 .. image:: README_files/README_10_0.png
 
@@ -367,67 +170,13 @@ Ya tenemos el valor acumulado. Ahora hacemos la prueba más bruta:
 liquidar toda la cartera en un único año y comparar cuánto dinero neto
 queda después de impuestos.
 
-
-
-.. raw:: html
-
-    <div>
-    <style scoped>
-        .dataframe tbody tr th:only-of-type {
-            vertical-align: middle;
-        }
-    
-        .dataframe tbody tr th {
-            vertical-align: top;
-        }
-    
-        .dataframe thead th {
-            text-align: right;
-        }
-    </style>
-    <table border="1" class="dataframe">
-      <thead>
-        <tr style="text-align: right;">
-          <th></th>
-          <th>Vehículo</th>
-          <th>Aportación bruta acumulada</th>
-          <th>Valor antes del rescate</th>
-          <th>Rescate bruto</th>
-          <th>Impuestos del rescate</th>
-          <th>Comisiones de salida</th>
-          <th>Dinero neto final</th>
-          <th>CAGR neto efectivo</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th>0</th>
-          <td>Fondo de inversión</td>
-          <td>400,000.00</td>
-          <td>1,378,364.87</td>
-          <td>1,378,364.87</td>
-          <td>311,073.77</td>
-          <td>0.00</td>
-          <td>1,067,291.09</td>
-          <td>0.02</td>
-        </tr>
-        <tr>
-          <th>1</th>
-          <td>Plan de pensiones</td>
-          <td>400,000.00</td>
-          <td>1,675,620.64</td>
-          <td>1,675,620.64</td>
-          <td>748,129.35</td>
-          <td>0.00</td>
-          <td>927,491.28</td>
-          <td>0.02</td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-
-
-
++-----+--------------------+----------------------------+-------------------------+---------------+-----------------------+----------------------+-------------------+--------------------+
+|     | Vehículo           | Aportación bruta acumulada | Valor antes del rescate | Rescate bruto | Impuestos del rescate | Comisiones de salida | Dinero neto final | CAGR neto efectivo |
++=====+====================+============================+=========================+===============+=======================+======================+===================+====================+
+| 0   | Fondo de inversión | 400,000.00                 | 1,378,364.87            | 1,378,364.87  | 311,073.77            | 0.00                 | 1,067,291.09      | 0.02               |
++-----+--------------------+----------------------------+-------------------------+---------------+-----------------------+----------------------+-------------------+--------------------+
+| 1   | Plan de pensiones  | 400,000.00                 | 1,675,620.64            | 1,675,620.64  | 748,129.35            | 0.00                 | 927,491.28        | 0.02               |
++-----+--------------------+----------------------------+-------------------------+---------------+-----------------------+----------------------+-------------------+--------------------+
 
 .. image:: README_files/README_13_0.png
 
@@ -463,68 +212,13 @@ Rescatarlo todo concentra demasiada renta en un solo ejercicio. Probemos
 una estrategia más razonable: extraer cada año un porcentaje pequeño del
 valor de la cartera. Extraeremos un 4%.
 
-
-.. raw:: html
-
-    <div>
-    <style scoped>
-        .dataframe tbody tr th:only-of-type {
-            vertical-align: middle;
-        }
-    
-        .dataframe tbody tr th {
-            vertical-align: top;
-        }
-    
-        .dataframe thead th {
-            text-align: right;
-        }
-    </style>
-    <table border="1" class="dataframe">
-      <thead>
-        <tr style="text-align: right;">
-          <th></th>
-          <th>Vehículo</th>
-          <th>Aportación bruta acumulada</th>
-          <th>Valor antes del rescate</th>
-          <th>Porcentaje rescatado</th>
-          <th>Rescate bruto</th>
-          <th>Impuestos del rescate</th>
-          <th>Comisiones de salida</th>
-          <th>Dinero neto recibido</th>
-          <th>Tipo efectivo</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th>0</th>
-          <td>Fondo de inversión</td>
-          <td>400,000.00</td>
-          <td>1,378,364.87</td>
-          <td>0.04</td>
-          <td>55,134.59</td>
-          <td>10,606.33</td>
-          <td>0.00</td>
-          <td>44,528.26</td>
-          <td>0.19</td>
-        </tr>
-        <tr>
-          <th>1</th>
-          <td>Plan de pensiones</td>
-          <td>400,000.00</td>
-          <td>1,675,620.64</td>
-          <td>0.04</td>
-          <td>67,024.83</td>
-          <td>27,980.74</td>
-          <td>0.00</td>
-          <td>39,044.08</td>
-          <td>0.42</td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-
-
++-----+--------------------+----------------------------+-------------------------+----------------------+---------------+-----------------------+----------------------+----------------------+---------------+
+|     | Vehículo           | Aportación bruta acumulada | Valor antes del rescate | Porcentaje rescatado | Rescate bruto | Impuestos del rescate | Comisiones de salida | Dinero neto recibido | Tipo efectivo |
++=====+====================+============================+=========================+======================+===============+=======================+======================+======================+===============+
+| 0   | Fondo de inversión | 400,000.00                 | 1,378,364.87            | 0.04                 | 55,134.59     | 10,606.33             | 0.00                 | 44,528.26            | 0.19          |
++-----+--------------------+----------------------------+-------------------------+----------------------+---------------+-----------------------+----------------------+----------------------+---------------+
+| 1   | Plan de pensiones  | 400,000.00                 | 1,675,620.64            | 0.04                 | 67,024.83     | 27,980.74             | 0.00                 | 39,044.08            | 0.42          |
++-----+--------------------+----------------------------+-------------------------+----------------------+---------------+-----------------------+----------------------+----------------------+---------------+
 
 .. image:: README_files/README_18_1.png
 
@@ -555,67 +249,14 @@ pensión máxima dentro del modelo. En los mapas, el verde significa que
 el plan deja más dinero neto que el fondo; el rojo significa que gana el
 fondo. La línea azul marca la frontera donde cambia el ganador.
 
-
-
-.. raw:: html
-
-    <div>
-    <style scoped>
-        .dataframe tbody tr th:only-of-type {
-            vertical-align: middle;
-        }
-    
-        .dataframe tbody tr th {
-            vertical-align: top;
-        }
-    
-        .dataframe thead th {
-            text-align: right;
-        }
-    </style>
-    <table border="1" class="dataframe">
-      <thead>
-        <tr style="text-align: right;">
-          <th></th>
-          <th>Escenario</th>
-          <th>Aportación anual</th>
-          <th>Horizonte</th>
-          <th>Comisión plan</th>
-          <th>Salario mínimo</th>
-          <th>Salario máximo</th>
-          <th>Pensión pública / ingresos mínimos</th>
-          <th>Pensión pública / ingresos máximos</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th>0</th>
-          <td>Plan de pensiones personal</td>
-          <td>1,500.00</td>
-          <td>40</td>
-          <td>0.00</td>
-          <td>1,000.00</td>
-          <td>150,000.00</td>
-          <td>1,000.00</td>
-          <td>75,000.00</td>
-        </tr>
-        <tr>
-          <th>1</th>
-          <td>Plan de pensiones de empresa</td>
-          <td>8,500.00</td>
-          <td>40</td>
-          <td>0.01</td>
-          <td>1,000.00</td>
-          <td>200,000.00</td>
-          <td>1,000.00</td>
-          <td>100,000.00</td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-
-
-
++-----+------------------------------+------------------+-----------+---------------+----------------+----------------+------------------------------+------------------------------+
+|     | Escenario                    | Aportación anual | Horizonte | Comisión plan | Salario mínimo | Salario máximo | Pensión pública / ingresos   | Pensión pública / ingresos   |
+|     |                              |                  |           |               |                |                | mínimos                      | máximos                      |
++=====+==============================+==================+===========+===============+================+================+==============================+==============================+
+| 0   | Plan de pensiones personal   | 1,500.00         | 40        | 0.00          | 1,000.00       | 150,000.00     | 1,000.00                     | 75,000.00                    |
++-----+------------------------------+------------------+-----------+---------------+----------------+----------------+------------------------------+------------------------------+
+| 1   | Plan de pensiones de empresa | 8,500.00         | 40        | 0.01          | 1,000.00       | 200,000.00     | 1,000.00                     | 100,000.00                   |
++-----+------------------------------+------------------+-----------+---------------+----------------+----------------+------------------------------+------------------------------+
 
 .. image:: README_files/README_23_0.png
 
@@ -689,68 +330,13 @@ Primer caso: salario ``150k``, pensión máxima de ``47k`` y ``40 años``
 de aportación. La pensión está capada, pero el ahorro fiscal al aportar
 ocurre en tramos altos.
 
-
-.. raw:: html
-
-    <div>
-    <style scoped>
-        .dataframe tbody tr th:only-of-type {
-            vertical-align: middle;
-        }
-    
-        .dataframe tbody tr th {
-            vertical-align: top;
-        }
-    
-        .dataframe thead th {
-            text-align: right;
-        }
-    </style>
-    <table border="1" class="dataframe">
-      <thead>
-        <tr style="text-align: right;">
-          <th></th>
-          <th>Vehículo</th>
-          <th>Aportación bruta acumulada</th>
-          <th>Valor antes del rescate</th>
-          <th>Porcentaje rescatado</th>
-          <th>Rescate bruto</th>
-          <th>Impuestos del rescate</th>
-          <th>Comisiones de salida</th>
-          <th>Dinero neto recibido</th>
-          <th>Tipo efectivo</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th>0</th>
-          <td>Fondo de inversión</td>
-          <td>400,000.00</td>
-          <td>1,192,253.70</td>
-          <td>0.04</td>
-          <td>47,690.15</td>
-          <td>9,141.01</td>
-          <td>0.00</td>
-          <td>38,549.14</td>
-          <td>0.19</td>
-        </tr>
-        <tr>
-          <th>1</th>
-          <td>Plan de pensiones</td>
-          <td>400,000.00</td>
-          <td>1,675,620.64</td>
-          <td>0.04</td>
-          <td>67,024.83</td>
-          <td>27,980.74</td>
-          <td>0.00</td>
-          <td>39,044.08</td>
-          <td>0.42</td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-
-
++-----+--------------------+----------------------------+-------------------------+----------------------+---------------+-----------------------+----------------------+----------------------+---------------+
+|     | Vehículo           | Aportación bruta acumulada | Valor antes del rescate | Porcentaje rescatado | Rescate bruto | Impuestos del rescate | Comisiones de salida | Dinero neto recibido | Tipo efectivo |
++=====+====================+============================+=========================+======================+===============+=======================+======================+======================+===============+
+| 0   | Fondo de inversión | 400,000.00                 | 1,192,253.70            | 0.04                 | 47,690.15     | 9,141.01              | 0.00                 | 38,549.14            | 0.19          |
++-----+--------------------+----------------------------+-------------------------+----------------------+---------------+-----------------------+----------------------+----------------------+---------------+
+| 1   | Plan de pensiones  | 400,000.00                 | 1,675,620.64            | 0.04                 | 67,024.83     | 27,980.74             | 0.00                 | 39,044.08            | 0.42          |
++-----+--------------------+----------------------------+-------------------------+----------------------+---------------+-----------------------+----------------------+----------------------+---------------+
 
 .. image:: README_files/README_41_1.png
 
@@ -773,68 +359,13 @@ alrededor de ``60k``. Todavía no hay pensión pública, así que se modela
 un rescate anual medio del ``6,8%`` del plan. Las gallinas que entran
 por las que salen.
 
-
-.. raw:: html
-
-    <div>
-    <style scoped>
-        .dataframe tbody tr th:only-of-type {
-            vertical-align: middle;
-        }
-    
-        .dataframe tbody tr th {
-            vertical-align: top;
-        }
-    
-        .dataframe thead th {
-            text-align: right;
-        }
-    </style>
-    <table border="1" class="dataframe">
-      <thead>
-        <tr style="text-align: right;">
-          <th></th>
-          <th>Vehículo</th>
-          <th>Aportación bruta acumulada</th>
-          <th>Valor antes del rescate</th>
-          <th>Porcentaje rescatado</th>
-          <th>Rescate bruto</th>
-          <th>Impuestos del rescate</th>
-          <th>Comisiones de salida</th>
-          <th>Dinero neto recibido</th>
-          <th>Tipo efectivo</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th>0</th>
-          <td>Fondo de inversión</td>
-          <td>200,000.00</td>
-          <td>295,951.94</td>
-          <td>0.07</td>
-          <td>20,124.73</td>
-          <td>2,946.64</td>
-          <td>0.00</td>
-          <td>17,178.09</td>
-          <td>0.15</td>
-        </tr>
-        <tr>
-          <th>1</th>
-          <td>Plan de pensiones</td>
-          <td>200,000.00</td>
-          <td>383,318.06</td>
-          <td>0.07</td>
-          <td>26,065.63</td>
-          <td>4,602.36</td>
-          <td>0.00</td>
-          <td>21,463.26</td>
-          <td>0.18</td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-
-
++-----+--------------------+----------------------------+-------------------------+----------------------+---------------+-----------------------+----------------------+----------------------+---------------+
+|     | Vehículo           | Aportación bruta acumulada | Valor antes del rescate | Porcentaje rescatado | Rescate bruto | Impuestos del rescate | Comisiones de salida | Dinero neto recibido | Tipo efectivo |
++=====+====================+============================+=========================+======================+===============+=======================+======================+======================+===============+
+| 0   | Fondo de inversión | 200,000.00                 | 295,951.94              | 0.07                 | 20,124.73     | 2,946.64              | 0.00                 | 17,178.09            | 0.15          |
++-----+--------------------+----------------------------+-------------------------+----------------------+---------------+-----------------------+----------------------+----------------------+---------------+
+| 1   | Plan de pensiones  | 200,000.00                 | 383,318.06              | 0.07                 | 26,065.63     | 4,602.36              | 0.00                 | 21,463.26            | 0.18          |
++-----+--------------------+----------------------------+-------------------------+----------------------+---------------+-----------------------+----------------------+----------------------+---------------+
 
 .. image:: README_files/README_44_1.png
 
@@ -848,68 +379,13 @@ Tercer caso: después de esos años sin pensión, empieza una pensión
 pública aproximada de ``18,5k``. El rescate baja al ``4%``, con la idea
 de no forzar tanto el agotamiento de la cartera.
 
-
-.. raw:: html
-
-    <div>
-    <style scoped>
-        .dataframe tbody tr th:only-of-type {
-            vertical-align: middle;
-        }
-    
-        .dataframe tbody tr th {
-            vertical-align: top;
-        }
-    
-        .dataframe thead th {
-            text-align: right;
-        }
-    </style>
-    <table border="1" class="dataframe">
-      <thead>
-        <tr style="text-align: right;">
-          <th></th>
-          <th>Vehículo</th>
-          <th>Aportación bruta acumulada</th>
-          <th>Valor antes del rescate</th>
-          <th>Porcentaje rescatado</th>
-          <th>Rescate bruto</th>
-          <th>Impuestos del rescate</th>
-          <th>Comisiones de salida</th>
-          <th>Dinero neto recibido</th>
-          <th>Tipo efectivo</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th>0</th>
-          <td>Fondo de inversión</td>
-          <td>200,000.00</td>
-          <td>295,951.94</td>
-          <td>0.04</td>
-          <td>11,838.08</td>
-          <td>1,683.91</td>
-          <td>0.00</td>
-          <td>10,154.17</td>
-          <td>0.14</td>
-        </tr>
-        <tr>
-          <th>1</th>
-          <td>Plan de pensiones</td>
-          <td>200,000.00</td>
-          <td>383,318.06</td>
-          <td>0.04</td>
-          <td>15,332.72</td>
-          <td>4,200.90</td>
-          <td>0.00</td>
-          <td>11,131.82</td>
-          <td>0.27</td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-
-
++-----+--------------------+----------------------------+-------------------------+----------------------+---------------+-----------------------+----------------------+----------------------+---------------+
+|     | Vehículo           | Aportación bruta acumulada | Valor antes del rescate | Porcentaje rescatado | Rescate bruto | Impuestos del rescate | Comisiones de salida | Dinero neto recibido | Tipo efectivo |
++=====+====================+============================+=========================+======================+===============+=======================+======================+======================+===============+
+| 0   | Fondo de inversión | 200,000.00                 | 295,951.94              | 0.04                 | 11,838.08     | 1,683.91              | 0.00                 | 10,154.17            | 0.14          |
++-----+--------------------+----------------------------+-------------------------+----------------------+---------------+-----------------------+----------------------+----------------------+---------------+
+| 1   | Plan de pensiones  | 200,000.00                 | 383,318.06              | 0.04                 | 15,332.72     | 4,200.90              | 0.00                 | 11,131.82            | 0.27          |
++-----+--------------------+----------------------------+-------------------------+----------------------+---------------+-----------------------+----------------------+----------------------+---------------+
 
 .. image:: README_files/README_47_1.png
 
