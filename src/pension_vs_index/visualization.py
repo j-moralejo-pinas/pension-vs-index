@@ -18,6 +18,44 @@ REGULAR_INDEX_FUND_LABEL = "Fondo de inversión"
 PENSION_PLAN_LABEL = "Plan de pensiones"
 
 
+def _format_compact_decimal(value: float) -> str:
+    return f"{value:.1f}".rstrip("0").rstrip(".").replace(".", ",")
+
+
+def _format_scenario_euros(value: float) -> str:
+    abs_value = abs(value)
+    sign = "-" if value < 0 else ""
+    if abs_value >= EURO_MILLION:
+        return f"{sign}{_format_compact_decimal(abs_value / EURO_MILLION)}M"
+    if abs_value >= EURO_THOUSAND:
+        return f"{sign}{_format_compact_decimal(abs_value / EURO_THOUSAND)}k"
+    return f"{value:.0f}"
+
+
+def format_extraction_rate_label(withdrawal_rate: float | None) -> str:
+    """Format an extraction rate for chart names."""
+    if withdrawal_rate is None:
+        return "total"
+    return f"{_format_compact_decimal(withdrawal_rate * 100)}%"
+
+
+def format_salary_extraction_chart_name(
+    *,
+    salary_before_retirement: float,
+    salary_after_retirement: float,
+    withdrawal_rate: float | None,
+) -> str:
+    """Build normalized chart names for salary and extraction scenarios."""
+    salary_before = _format_scenario_euros(salary_before_retirement)
+    salary_after = _format_scenario_euros(salary_after_retirement)
+    extraction_rate = format_extraction_rate_label(withdrawal_rate)
+    return (
+        f"Salario antes del retiro {salary_before} · "
+        f"salario después del retiro {salary_after} · "
+        f"extracción {extraction_rate}"
+    )
+
+
 def format_euros(value: float, _position: int | None = None) -> str:
     """Format euro-denominated chart ticks with compact suffixes."""
     abs_value = abs(value)
@@ -321,8 +359,8 @@ def plot_salary_heatmap_panel(
         salary_values,
     )
     ax.set_title(scenario["name"])
-    ax.set_xlabel("Salario durante aportación (EUR)")
-    ax.set_ylabel("Pensión pública / ingresos (EUR)")
+    ax.set_xlabel("Salario antes del retiro (EUR)")
+    ax.set_ylabel("Salario después del retiro (EUR)")
     apply_money_axis(ax, "x", scenario["contribution_salary_ticks"])
     apply_money_axis(ax, "y", scenario["withdrawal_salary_ticks"])
     ax.set_xlim(scenario["contribution_salary_min"], scenario["contribution_salary_max"])
