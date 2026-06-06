@@ -217,10 +217,11 @@ empieza a tributar ese rescate.
 
 El siguiente paso es mover dos variables a la vez:
 
-- **Salario antes del retiro**: aproxima el tipo marginal que se evita
-  al meter dinero en el plan.
-- **Salario después del retiro**: aproxima desde qué tramo empieza a
-  tributar el dinero que sale del plan.
+- **Salario durante los años de aportación**: aproxima el tipo marginal
+  que se evita al meter dinero en el plan.
+- **Pensión pública o ingresos ya cobrados durante el rescate**:
+  aproximan desde qué tramo empieza a tributar el dinero que sale del
+  plan.
 
 La lectura de los mapas es directa: ``60k`` o más representa una renta
 alta, ``150k`` representa una renta muy alta y ``47k`` representa una
@@ -346,9 +347,9 @@ desde niveles más bajos. Esta es una de las situaciones donde el
 diferimiento fiscal encaja mejor, llegando a recibir más de 4000 euros
 extra al año.
 
-Tercer caso: después de esos años sin pensión, empieza una pensión
-pública aproximada de ``18,5k``. El rescate baja al ``4%``, con la idea
-de no forzar tanto el agotamiento de la cartera.
+Tercer caso: después de 20 años sin pensión, empieza una pensión pública
+aproximada de ``18,5k``. El rescate baja al ``4%``, con la idea de no
+forzar tanto el agotamiento de la cartera.
 
 +-----+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
 |     | Vehículo           | Aportación bruta acumulada | Valor antes del rescate | Porcentaje de extracción | Rescate bruto | Impuestos del rescate | Comisiones de salida | Dinero neto recibido | Tipo efectivo |
