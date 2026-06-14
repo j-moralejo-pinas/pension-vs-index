@@ -38,8 +38,8 @@ def test_calculate_irpf_returns_zero_below_first_bracket() -> None:
     assert tax == 0
 
 
-def test_regular_contribution_tax_matches_salary_after_tax_ratio() -> None:
-    """Regular contributions are reduced using the salary after-tax ratio."""
+def test_regular_contribution_tax_uses_marginal_salary_slice() -> None:
+    """Regular contributions are reduced using the marginal after-tax salary slice."""
     tax_entity = HaciendaEspanola()
 
     amount_after_tax, tax_amount = tax_entity.calculate_contribution_tax(
@@ -48,11 +48,9 @@ def test_regular_contribution_tax_matches_salary_after_tax_ratio() -> None:
         tags=[],
     )
 
-    amount_after_ss = 40_000 * (1 - tax_entity.contingencias_comunes_trabajador)
-    expected_irpf = tax_entity.calculate_irpf(
-        amount_after_ss, tax_entity.irpf_estatal
-    ) + tax_entity.calculate_irpf(amount_after_ss, tax_entity.irpf_autonomico)
-    expected_after_tax = 1_000 * (amount_after_ss - expected_irpf) / 40_000
+    expected_after_tax = tax_entity._salary_after_income_tax(  # noqa: SLF001
+        40_000
+    ) - tax_entity._salary_after_income_tax(39_000)  # noqa: SLF001
 
     assert amount_after_tax == pytest.approx(expected_after_tax)
     assert tax_amount == pytest.approx(1_000 - expected_after_tax)

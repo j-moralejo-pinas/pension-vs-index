@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Literal
 
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.collections import LineCollection
 from matplotlib.ticker import FuncFormatter, NullFormatter
 
@@ -180,7 +181,11 @@ def _symmetric_color_limit(values: Any) -> float:
     float
         Maximum absolute value across the input array.
     """
-    return max(abs(values.max()), abs(values.min()))
+    finite_values = values[np.isfinite(values)]
+    if finite_values.size == 0:
+        return 0.0
+
+    return max(abs(finite_values.max()), abs(finite_values.min()))
 
 
 def plot_accumulation_history(history: pd.DataFrame) -> Any:
@@ -282,10 +287,13 @@ def add_sign_boundary(
     None
         Boundary segments are added to ``ax`` in place.
     """
+    finite_cells = np.isfinite(values)
     positive_cells = values > 0
     boundary_segments = []
     for row in range(positive_cells.shape[0]):
         for column in range(positive_cells.shape[1] - 1):
+            if not (finite_cells[row, column] and finite_cells[row, column + 1]):
+                continue
             if positive_cells[row, column] != positive_cells[row, column + 1]:
                 boundary_segments.extend(
                     (
@@ -297,6 +305,8 @@ def add_sign_boundary(
                 )
     for row in range(positive_cells.shape[0] - 1):
         for column in range(positive_cells.shape[1]):
+            if not (finite_cells[row, column] and finite_cells[row + 1, column]):
+                continue
             if positive_cells[row, column] != positive_cells[row + 1, column]:
                 boundary_segments.extend(
                     (
@@ -340,6 +350,7 @@ def plot_salary_heatmap_panel(
         index="withdrawal_salary",
         columns="contribution_salary",
         values="pension_advantage",
+        dropna=False,
     )
     salary_values = salary_grid.to_numpy()
     color_limit = _symmetric_color_limit(salary_values)

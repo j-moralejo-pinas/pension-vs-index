@@ -590,6 +590,7 @@ def working_retirement_salary_sensitivity_results(
     """
     axes_by_scenario = {}
     rows = []
+    tax_entity = HaciendaEspanola()
     for scenario_name, config in scenario_configs.items():
         parameters = heatmap_parameters[scenario_name]
         contribution_salary_sweep = linear_spaced_values(
@@ -627,6 +628,23 @@ def working_retirement_salary_sensitivity_results(
                 ),
             )
             for withdrawal_salary in withdrawal_salary_sweep:
+                if not _salary_can_fund_annual_contribution(
+                    contribution_salary,
+                    config.annual_contribution,
+                    tax_entity,
+                ):
+                    rows.append(
+                        {
+                            "scenario": scenario_name,
+                            "annual_contribution": config.annual_contribution,
+                            "withdrawal_rate": withdrawal_rate,
+                            "contribution_salary": contribution_salary,
+                            "withdrawal_salary": withdrawal_salary,
+                            "pension_advantage": math.nan,
+                        }
+                    )
+                    continue
+
                 scenario_config = replace(
                     contribution_config,
                     existing_gross_salary_during_withdrawal=max(
@@ -652,6 +670,37 @@ def working_retirement_salary_sensitivity_results(
                 )
 
     return pd.DataFrame(rows), axes_by_scenario
+
+
+def _salary_can_fund_annual_contribution(
+    gross_annual_salary: float,
+    annual_contribution: float,
+    tax_entity: HaciendaEspanola,
+) -> bool:
+    """
+    Return whether a salary can fund the modeled annual contribution before IRPF.
+
+    Parameters
+    ----------
+    gross_annual_salary : float
+        Gross salary during the contribution period.
+    annual_contribution : float
+        Gross annual contribution modeled for each vehicle.
+    tax_entity : HaciendaEspanola
+        Tax entity providing the worker social-security contribution rate.
+
+    Returns
+    -------
+    bool
+        True when the salary after worker social-security contribution is at least the
+        contribution amount after worker social-security contribution.
+    """
+    salary_before_irpf = gross_annual_salary * (1 - tax_entity.contingencias_comunes_trabajador)
+    contribution_before_irpf = annual_contribution * (
+        1 - tax_entity.contingencias_comunes_trabajador
+    )
+
+    return salary_before_irpf >= contribution_before_irpf
 
 
 def pension_advantage_value(results: pd.DataFrame, value_column: str) -> float:

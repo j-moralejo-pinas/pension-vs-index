@@ -53,9 +53,9 @@ Estos son los supuestos que usa el notebook:
   los últimos 40 años.
 - **Rango de sensibilidad**: de ``5%`` a ``9%``, lo bastante amplio como
   para ver cuándo cambia la frontera entre plan y fondo.
-- **Aportación anual del escenario combinado**: ``10.000 EUR``,
-  divididos en ``1.500 EUR`` de plan personal y ``8.500 EUR`` de plan de
-  empresa.
+- **Aportación anual del escenario combinado**: ``10.000 EUR`` antes de
+  IRPF, divididos en ``1.500 EUR`` de plan personal y ``8.500 EUR`` de
+  plan de empresa.
 - **Comisión del fondo de inversión**: ``0,12%`` anual.
 - **Comisión del plan personal**: ``0,38%`` anual, usando como
   referencia el plan de pensiones global de MyInvestor.
@@ -76,7 +76,6 @@ Los diccionarios del notebook controlan todos los experimentos. Para
 evitar duplicar información, las condiciones principales de cada
 escenario aparecen en el título de la gráfica correspondiente.
 
-
 Los tramos fiscales que mandan en la comparación
 ------------------------------------------------
 
@@ -89,35 +88,36 @@ Antes de mirar resultados, merece la pena poner sobre la mesa las dos
 escalas que usa el modelo: el IRPF para los rescates del plan y la
 tributación del ahorro para las plusvalías del fondo.
 
-+-----+---------------------------+--------------+--------------------------+-----------------+
-|     | Tramo estatal             | Tipo estatal | Tramo autonómico         | Tipo autonómico |
-+=====+===========================+==============+==========================+=================+
-| 0   | 5.550 EUR - 12.450 EUR    | 9,5%         | 5.957 EUR - 13.362 EUR   | 8,5%            |
-+-----+---------------------------+--------------+--------------------------+-----------------+
-| 1   | 12.450 EUR - 20.200 EUR   | 12,0%        | 13.362 EUR - 19.005 EUR  | 10,7%           |
-+-----+---------------------------+--------------+--------------------------+-----------------+
-| 2   | 20.200 EUR - 35.200 EUR   | 15,0%        | 19.005 EUR - 35.426 EUR  | 12,8%           |
-+-----+---------------------------+--------------+--------------------------+-----------------+
-| 3   | 35.200 EUR - 60.000 EUR   | 18,5%        | 35.426 EUR - 57.320 EUR  | 17,4%           |
-+-----+---------------------------+--------------+--------------------------+-----------------+
-| 4   | 60.000 EUR - 300.000 EUR  | 22,5%        | 57.320 EUR - En adelante | 20,5%           |
-+-----+---------------------------+--------------+--------------------------+-----------------+
-| 5   | 300.000 EUR - En adelante | 24,5%        |                          |                 |
-+-----+---------------------------+--------------+--------------------------+-----------------+
 
-+-----+---------------------------+----------------+
-|     | Tramo ganancias           | Tipo ganancias |
-+=====+===========================+================+
-| 0   | 0 EUR - 6.000 EUR         | 19,0%          |
-+-----+---------------------------+----------------+
-| 1   | 6.000 EUR - 50.000 EUR    | 21,0%          |
-+-----+---------------------------+----------------+
-| 2   | 50.000 EUR - 200.000 EUR  | 23,0%          |
-+-----+---------------------------+----------------+
-| 3   | 200.000 EUR - 300.000 EUR | 27,0%          |
-+-----+---------------------------+----------------+
-| 4   | 300.000 EUR - En adelante | 30,0%          |
-+-----+---------------------------+----------------+
++---+---------------------------+--------------+--------------------------+-----------------+
+|   | Tramo estatal             | Tipo estatal | Tramo autonómico         | Tipo autonómico |
++===+===========================+==============+==========================+=================+
+| 0 | 5.550 EUR - 12.450 EUR    | 9,5%         | 5.957 EUR - 13.362 EUR   | 8,5%            |
++---+---------------------------+--------------+--------------------------+-----------------+
+| 1 | 12.450 EUR - 20.200 EUR   | 12,0%        | 13.362 EUR - 19.005 EUR  | 10,7%           |
++---+---------------------------+--------------+--------------------------+-----------------+
+| 2 | 20.200 EUR - 35.200 EUR   | 15,0%        | 19.005 EUR - 35.426 EUR  | 12,8%           |
++---+---------------------------+--------------+--------------------------+-----------------+
+| 3 | 35.200 EUR - 60.000 EUR   | 18,5%        | 35.426 EUR - 57.320 EUR  | 17,4%           |
++---+---------------------------+--------------+--------------------------+-----------------+
+| 4 | 60.000 EUR - 300.000 EUR  | 22,5%        | 57.320 EUR - En adelante | 20,5%           |
++---+---------------------------+--------------+--------------------------+-----------------+
+| 5 | 300.000 EUR - En adelante | 24,5%        |                          |                 |
++---+---------------------------+--------------+--------------------------+-----------------+
+
++---+---------------------------+----------------+
+|   | Tramo ganancias           | Tipo ganancias |
++===+===========================+================+
+| 0 | 0 EUR - 6.000 EUR         | 19,0%          |
++---+---------------------------+----------------+
+| 1 | 6.000 EUR - 50.000 EUR    | 21,0%          |
++---+---------------------------+----------------+
+| 2 | 50.000 EUR - 200.000 EUR  | 23,0%          |
++---+---------------------------+----------------+
+| 3 | 200.000 EUR - 300.000 EUR | 27,0%          |
++---+---------------------------+----------------+
+| 4 | 300.000 EUR - En adelante | 30,0%          |
++---+---------------------------+----------------+
 
 1. Aportar antes de IRPF
 ------------------------
@@ -126,19 +126,20 @@ Empezamos con el caso base: ``10.000 EUR`` al año durante ``40 años``.
 No es una cifra puesta al azar; es la suma modelada de un plan personal
 (``1.500 EUR``) y un plan de empresa (``8.500 EUR``).
 
-El salario de ``60k`` representa un perfil de renta alto, y la pensión
-pública de ``47k`` representa una pensión máxima dentro del modelo. Con
-ese punto de partida, lo primero es ver cuánto acumula cada vehículo
-antes de rescatar nada.
+El salario de ``47k`` representa el salario necesario para alcanzar la
+pensión pública máxima, y la pensión pública de ``47k`` representa una
+pensión máxima dentro del modelo. Con ese punto de partida, lo primero
+es ver cuánto acumula cada vehículo antes de rescatar nada.
 
-+-----+--------------------+----------------------------+-----------------------------+------------------------------+------------+-------------------------+
-|     | Vehículo           | Aportación bruta acumulada | Importe invertido acumulado | Impuestos/cotizaciones en    | Comisiones | Valor antes del rescate |
-|     |                    |                            |                             | aportación                   |            |                         |
-+=====+====================+============================+=============================+==============================+============+=========================+
-| 0   | Fondo de inversión | 400,000.00                 | 281,052.28                  | 118,947.72                   | 0.00       | 1,378,364.87            |
-+-----+--------------------+----------------------------+-----------------------------+------------------------------+------------+-------------------------+
-| 1   | Plan de pensiones  | 400,000.00                 | 381,200.00                  | 18,800.00                    | 0.00       | 1,675,620.64            |
-+-----+--------------------+----------------------------+-----------------------------+------------------------------+------------+-------------------------+
+
+
++---+--------------------+----------------------------+-----------------------------+--------------------------------------+------------+-------------------------+
+|   | Vehículo           | Aportación bruta acumulada | Importe invertido acumulado | Impuestos/cotizaciones en aportación | Comisiones | Valor antes del rescate |
++===+====================+============================+=============================+======================================+============+=========================+
+| 0 | Fondo de inversión | 419,727.18                 | 258,140.41                  | 161,586.77                           | 0.00       | 1,265,998.16            |
++---+--------------------+----------------------------+-----------------------------+--------------------------------------+------------+-------------------------+
+| 1 | Plan de pensiones  | 419,727.18                 | 400,000.00                  | 19,727.18                            | 0.00       | 1,758,258.80            |
++---+--------------------+----------------------------+-----------------------------+--------------------------------------+------------+-------------------------+
 
 .. image:: README_files/README_10_0.png
 
@@ -150,13 +151,15 @@ Ya tenemos el valor acumulado. Ahora hacemos la prueba más bruta:
 liquidar toda la cartera en un único año y comparar cuánto dinero neto
 queda después de impuestos.
 
-+-----+--------------------+----------------------------+-------------------------+---------------+-----------------------+----------------------+-------------------+--------------------+
-|     | Vehículo           | Aportación bruta acumulada | Valor antes del rescate | Rescate bruto | Impuestos del rescate | Comisiones de salida | Dinero neto final | CAGR neto efectivo |
-+=====+====================+============================+=========================+===============+=======================+======================+===================+====================+
-| 0   | Fondo de inversión | 400,000.00                 | 1,378,364.87            | 1,378,364.87  | 311,073.77            | 0.00                 | 1,067,291.09      | 0.02               |
-+-----+--------------------+----------------------------+-------------------------+---------------+-----------------------+----------------------+-------------------+--------------------+
-| 1   | Plan de pensiones  | 400,000.00                 | 1,675,620.64            | 1,675,620.64  | 748,129.35            | 0.00                 | 927,491.28        | 0.02               |
-+-----+--------------------+----------------------------+-------------------------+---------------+-----------------------+----------------------+-------------------+--------------------+
+
+
++---+--------------------+----------------------------+-------------------------+---------------+-----------------------+----------------------+-------------------+--------------------+
+|   | Vehículo           | Aportación bruta acumulada | Valor antes del rescate | Rescate bruto | Impuestos del rescate | Comisiones de salida | Dinero neto final | CAGR neto efectivo |
++===+====================+============================+=========================+===============+=======================+======================+===================+====================+
+| 0 | Fondo de inversión | 419,727.18                 | 1,265,998.16            | 1,265,998.16  | 284,237.32            | 0.00                 | 981,760.83        | 0.02               |
++---+--------------------+----------------------------+-------------------------+---------------+-----------------------+----------------------+-------------------+--------------------+
+| 1 | Plan de pensiones  | 419,727.18                 | 1,758,258.80            | 1,758,258.80  | 785,316.53            | 0.00                 | 972,942.27        | 0.02               |
++---+--------------------+----------------------------+-------------------------+---------------+-----------------------+----------------------+-------------------+--------------------+
 
 .. image:: README_files/README_13_0.png
 
@@ -192,13 +195,14 @@ Rescatarlo todo concentra demasiada renta en un solo ejercicio. Probemos
 una estrategia más razonable: extraer cada año un porcentaje pequeño del
 valor de la cartera. Extraeremos un 4%.
 
-+-----+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
-|     | Vehículo           | Aportación bruta acumulada | Valor antes del rescate | Porcentaje de extracción | Rescate bruto | Impuestos del rescate | Comisiones de salida | Dinero neto recibido | Tipo efectivo |
-+=====+====================+============================+=========================+==========================+===============+=======================+======================+======================+===============+
-| 0   | Fondo de inversión | 400,000.00                 | 1,378,364.87            | 0.04                     | 55,134.59     | 10,606.33             | 0.00                 | 44,528.26            | 0.19          |
-+-----+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
-| 1   | Plan de pensiones  | 400,000.00                 | 1,675,620.64            | 0.04                     | 67,024.83     | 27,980.74             | 0.00                 | 39,044.08            | 0.42          |
-+-----+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
+
++---+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
+|   | Vehículo           | Aportación bruta acumulada | Valor antes del rescate | Porcentaje de extracción | Rescate bruto | Impuestos del rescate | Comisiones de salida | Dinero neto recibido | Tipo efectivo |
++===+====================+============================+=========================+==========================+===============+=======================+======================+======================+===============+
+| 0 | Fondo de inversión | 419,727.18                 | 1,265,998.16            | 0.04                     | 50,639.93     | 9,713.83              | 0.00                 | 40,926.10            | 0.19          |
++---+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
+| 1 | Plan de pensiones  | 419,727.18                 | 1,758,258.80            | 0.04                     | 70,330.35     | 29,402.12             | 0.00                 | 40,928.23            | 0.42          |
++---+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
 
 .. image:: README_files/README_18_1.png
 
@@ -223,22 +227,13 @@ El siguiente paso es mover dos variables a la vez:
   aproximan desde qué tramo empieza a tributar el dinero que sale del
   plan.
 
-La lectura de los mapas es directa: ``60k`` o más representa una renta
-alta, ``150k`` representa una renta muy alta y ``47k`` representa una
-pensión máxima dentro del modelo. En los mapas, el verde significa que
-el plan deja más dinero neto que el fondo; el rojo significa que gana el
-fondo. La línea azul marca la frontera donde cambia el ganador.
+La lectura de los mapas es directa: en los mapas, el verde significa que
+el plan deja más dinero neto al rescatar que el fondo; el rojo significa
+que gana el fondo. La línea azul marca la frontera donde cambia el
+ganador.
 
 
 .. image:: README_files/README_23_0.png
-
-
-En rescate total, el plan lo tiene difícil. Al concentrar décadas de
-ahorro en un solo año, el IRPF de salida domina incluso cuando la
-aportación se hizo desde salarios altos.
-
-
-.. image:: README_files/README_25_0.png
 
 
 Con rescates del ``4%``, empiezan a aparecer más zonas donde el plan
@@ -260,19 +255,19 @@ comisiones adicionales.
 Primero miramos el caso de salario ``60k`` y pensión máxima de ``47k``.
 
 
-.. image:: README_files/README_30_0.png
+.. image:: README_files/README_28_0.png
 
 
 Con pensión máxima, el plan no encuentra espacio. La ventaja de aportar
 antes de IRPF se enfrenta a una salida que ya empieza desde una pensión
 alta.
 
-Ahora subimos el salario a ``150k``. Este perfil ya ha saturado la base
+Ahora subimos el salario a ``100k``. Este perfil ya ha saturado la base
 de cotización mucho antes, pero sigue pudiendo aportar al plan desde
 tramos altos de IRPF.
 
 
-.. image:: README_files/README_33_0.png
+.. image:: README_files/README_31_0.png
 
 
 Aquí sí aparecen zonas verdes. Eso no significa que las comisiones dejen
@@ -285,7 +280,7 @@ El último bloque usa un escenario de retirada temprana con pensión
 pública aproximada de ``18,5k``.
 
 
-.. image:: README_files/README_36_0.png
+.. image:: README_files/README_34_0.png
 
 
 Con una pensión pública menor, el plan empieza a tener más margen. La
@@ -298,28 +293,26 @@ rescate se suma sobre una base de ingresos más baja.
 Para cerrar, miramos tres fotos concretas. Los mapas anteriores ayudan a
 ver la frontera general; estos casos sirven para aterrizar la intuición.
 
-Primer caso: salario ``150k``, pensión máxima de ``47k`` y ``40 años``
+Primer caso: salario ``100k``, pensión máxima de ``47k`` y ``40 años``
 de aportación. La pensión está capada, pero el ahorro fiscal al aportar
 ocurre en tramos altos.
 
-+-----+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
-|     | Vehículo           | Aportación bruta acumulada | Valor antes del rescate | Porcentaje de extracción | Rescate bruto | Impuestos del rescate | Comisiones de salida | Dinero neto recibido | Tipo efectivo |
-+=====+====================+============================+=========================+==========================+===============+=======================+======================+======================+===============+
-| 0   | Fondo de inversión | 400,000.00                 | 1,192,253.70            | 0.04                     | 47,690.15     | 9,141.01              | 0.00                 | 38,549.14            | 0.19          |
-+-----+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
-| 1   | Plan de pensiones  | 400,000.00                 | 1,675,620.64            | 0.04                     | 67,024.83     | 27,980.74             | 0.00                 | 39,044.08            | 0.42          |
-+-----+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
 
-.. image:: README_files/README_41_1.png
++---+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
+|   | Vehículo           | Aportación bruta acumulada | Valor antes del rescate | Porcentaje de extracción | Rescate bruto | Impuestos del rescate | Comisiones de salida | Dinero neto recibido | Tipo efectivo |
++===+====================+============================+=========================+==========================+===============+=======================+======================+======================+===============+
+| 0 | Fondo de inversión | 419,727.18                 | 1,118,180.52            | 0.04                     | 44,727.22     | 8,565.63              | 0.00                 | 36,161.59            | 0.19          |
++---+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
+| 1 | Plan de pensiones  | 419,727.18                 | 1,758,258.80            | 0.04                     | 70,330.35     | 29,402.12             | 0.00                 | 40,928.23            | 0.42          |
++---+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
+
+.. image:: README_files/README_39_1.png
 
 
 Este caso muestra por qué el plan puede empezar a tener sentido para
 rentas muy altas. La pensión pública no sube indefinidamente con el
 salario, pero el ahorro fiscal al aportar sí puede producirse en tramos
 altos.
-
-Aun así, la ventaja no es automática. Puede ser pequeña y depende mucho
-de la comisión del plan y de la rentabilidad esperada.
 
 Una lectura diferente algo cínica: si el resultado neto queda parecido,
 el plan también puede verse como una forma de trasladar impuestos desde
@@ -331,65 +324,67 @@ alrededor de ``60k``. Todavía no hay pensión pública, así que se modela
 un rescate anual medio del ``6,8%`` del plan. Las gallinas que entran
 por las que salen.
 
-+-----+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
-|     | Vehículo           | Aportación bruta acumulada | Valor antes del rescate | Porcentaje de extracción | Rescate bruto | Impuestos del rescate | Comisiones de salida | Dinero neto recibido | Tipo efectivo |
-+=====+====================+============================+=========================+==========================+===============+=======================+======================+======================+===============+
-| 0   | Fondo de inversión | 200,000.00                 | 295,951.94              | 0.07                     | 20,124.73     | 2,946.64              | 0.00                 | 17,178.09            | 0.15          |
-+-----+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
-| 1   | Plan de pensiones  | 200,000.00                 | 383,318.06              | 0.07                     | 26,065.63     | 4,602.36              | 0.00                 | 21,463.26            | 0.18          |
-+-----+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
 
-.. image:: README_files/README_44_1.png
++---+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
+|   | Vehículo           | Aportación bruta acumulada | Valor antes del rescate | Porcentaje de extracción | Rescate bruto | Impuestos del rescate | Comisiones de salida | Dinero neto recibido | Tipo efectivo |
++===+====================+============================+=========================+==========================+===============+=======================+======================+======================+===============+
+| 0 | Fondo de inversión | 209,863.59                 | 269,667.51              | 0.07                     | 18,337.39     | 2,674.29              | 0.00                 | 15,663.10            | 0.15          |
++---+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
+| 1 | Plan de pensiones  | 209,863.59                 | 402,222.52              | 0.07                     | 27,351.13     | 4,959.73              | 0.00                 | 22,391.40            | 0.18          |
++---+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
+
+.. image:: README_files/README_42_1.png
 
 
 Sin pensión pública ocupando tramos de IRPF, el rescate del plan entra
 desde niveles más bajos. Esta es una de las situaciones donde el
-diferimiento fiscal encaja mejor, llegando a recibir más de 4000 euros
+diferimiento fiscal encaja mejor, llegando a recibir casi de 7000 euros
 extra al año.
 
 Tercer caso: después de 20 años sin pensión, empieza una pensión pública
 aproximada de ``18,5k``. El rescate baja al ``4%``, con la idea de no
 forzar tanto el agotamiento de la cartera.
 
-+-----+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
-|     | Vehículo           | Aportación bruta acumulada | Valor antes del rescate | Porcentaje de extracción | Rescate bruto | Impuestos del rescate | Comisiones de salida | Dinero neto recibido | Tipo efectivo |
-+=====+====================+============================+=========================+==========================+===============+=======================+======================+======================+===============+
-| 0   | Fondo de inversión | 200,000.00                 | 295,951.94              | 0.04                     | 11,838.08     | 1,683.91              | 0.00                 | 10,154.17            | 0.14          |
-+-----+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
-| 1   | Plan de pensiones  | 200,000.00                 | 383,318.06              | 0.04                     | 15,332.72     | 4,200.90              | 0.00                 | 11,131.82            | 0.27          |
-+-----+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
 
-.. image:: README_files/README_47_1.png
++---+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
+|   | Vehículo           | Aportación bruta acumulada | Valor antes del rescate | Porcentaje de extracción | Rescate bruto | Impuestos del rescate | Comisiones de salida | Dinero neto recibido | Tipo efectivo |
++===+====================+============================+=========================+==========================+===============+=======================+======================+======================+===============+
+| 0 | Fondo de inversión | 209,863.59                 | 269,667.51              | 0.04                     | 10,786.70     | 1,523.70              | 0.00                 | 9,263.00             | 0.14          |
++---+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
+| 1 | Plan de pensiones  | 209,863.59                 | 402,222.52              | 0.04                     | 16,088.90     | 4,411.12              | 0.00                 | 11,677.78            | 0.27          |
++---+--------------------+----------------------------+-------------------------+--------------------------+---------------+-----------------------+----------------------+----------------------+---------------+
+
+.. image:: README_files/README_45_1.png
 
 
 Con ``18,5k`` de pensión, el plan sigue teniendo más margen que con
 pensión máxima, pero parte de los tramos ya están ocupados. La ventaja
-no desaparece necesariamente, aunque se estrecha, siendo inferior a 1000
-euros al año.
+no desaparece necesariamente, aunque se estrecha, siendo de alrededor de
+2400 euros extra al año.
 
-Podrás disfrutar de un par de fines de semana de vacaciones extra al
-año.
+Podrás disfrutar de un buen viaje de vacaciones extra al año.
 
 Conclusiones
 ------------
 
 Un plan de pensiones no elimina el IRPF: lo aplaza. Su ventaja aparece
 cuando aportas en años con tipos marginales altos y rescatas en años con
-ingresos más bajos, por ejemplo durante una retirada temprana, antes de
-cobrar pensión pública o si esperas una pensión claramente inferior a tu
-salario actual.
+ingresos más bajos, por ejemplo, con salarios muy altos o durante una
+retirada temprana, antes de cobrar pensión pública o si esperas una
+pensión claramente inferior a tu salario actual.
 
 Si te jubilas a la edad ordinaria con una pensión pública alta o cercana
-a la máxima, el plan casi nunca parece especialmente atractivo. El
-rescate se suma a la pensión como renta del trabajo, por lo que puedes
-acabar tributando a tipos parecidos a los que intentaste evitar al
-aportar.
+a la máxima y un salario medio, el plan casi nunca parece especialmente
+atractivo. El rescate se suma a la pensión como renta del trabajo, por
+lo que puedes acabar tributando a tipos parecidos a los que intentaste
+evitar al aportar.
 
 Frente a eso, el fondo indexado es más simple y flexible: inviertes
-después de impuestos, pero al vender solo tributan las ganancias. En el
-plan de pensiones, en cambio, todo lo rescatado tributa como renta del
-trabajo, por lo que rescatar grandes cantidades de golpe suele ser una
-mala estrategia.
+después de impuestos, pero al vender solo tributan las ganancias, y
+puedes extraer cuando quieras. En el plan de pensiones, en cambio, todo
+lo rescatado tributa como renta del trabajo, por lo que rescatar grandes
+cantidades de golpe suele ser una mala estrategia, y tienes que esperar
+10 años para extraer una aportación.
 
 La conclusión práctica no es “plan de pensiones sí” o “plan de pensiones
 no”. El plan solo tiene sentido si hay una estrategia fiscal clara:

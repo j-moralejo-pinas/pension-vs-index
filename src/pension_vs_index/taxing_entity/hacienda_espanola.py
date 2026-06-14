@@ -193,20 +193,37 @@ class HaciendaEspanola(BaseTaxingEntity):
         float
             The amount of tax to apply to the given amount.
         """
+        salary_before_contribution = max(gross_annual_salary - amount, 0.0)
+        amount_after_tax = self._salary_after_income_tax(
+            gross_annual_salary
+        ) - self._salary_after_income_tax(salary_before_contribution)
+
+        tax_over_amount = amount - amount_after_tax
+
+        return amount_after_tax, tax_over_amount
+
+    def _salary_after_income_tax(self, gross_annual_salary: float) -> float:
+        """
+        Calculate net salary after worker social security and IRPF.
+
+        Parameters
+        ----------
+        gross_annual_salary : float
+            The gross annual salary.
+
+        Returns
+        -------
+        float
+            The salary after worker social-security contributions and IRPF.
+        """
         worker_seguridad_social_contribution = (
             gross_annual_salary * self.contingencias_comunes_trabajador
         )
         amount_after_ss = gross_annual_salary - worker_seguridad_social_contribution
         irpf_estatal = self.calculate_irpf(amount_after_ss, self.irpf_estatal)
         irpf_autonomico = self.calculate_irpf(amount_after_ss, self.irpf_autonomico)
-        irpf_total = irpf_estatal + irpf_autonomico
-        salary_after_tax = amount_after_ss - irpf_total
 
-        amount_after_tax = amount * salary_after_tax / gross_annual_salary
-
-        tax_over_amount = amount - amount_after_tax
-
-        return amount_after_tax, tax_over_amount
+        return amount_after_ss - irpf_estatal - irpf_autonomico
 
     def plan_de_pensiones_contribution_tax(self, amount: float) -> tuple[float, float]:
         """

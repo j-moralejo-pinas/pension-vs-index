@@ -1,6 +1,9 @@
 """Tests for visualization label helpers."""
 
+import numpy as np
+
 from pension_vs_index.visualization import (
+    _symmetric_color_limit,
     format_extraction_rate_label,
     format_salary_extraction_chart_name,
 )
@@ -27,3 +30,10 @@ def test_format_salary_extraction_chart_name_describes_salary_and_extraction() -
         )
         == expected_name
     )
+
+
+def test_symmetric_color_limit_ignores_nan_values() -> None:
+    """Blank heatmap cells do not break the color scale."""
+    values = np.array([[np.nan, -2.0], [1.0, np.nan]])
+
+    assert _symmetric_color_limit(values) == 2.0
